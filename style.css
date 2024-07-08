@@ -1,0 +1,45 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    line-height: 20px;
+}
+
+
+select {
+    width: 150px;
+}
+
+.container {
+    width: 680px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0 0 20px;
+}
+
+.SQL_TABLE {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-bottom: 5%;
+}
+
+#TABLE_NAME {
+    margin-bottom: 2%;
+}
+
+.GRAPH {
+    display: flex;
+    flex-direction: row;
+}
+
+.VARIABLES {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 5%;
+    gap: 2%;
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tooltip.css">
+    <script src="something.js"></script>
+    <title>Line Chart</title>
+</head>
+<body>
+    <div class="container">
+        <div class="SQL_TABLE">
+            <input type="text" name="TABLE_NAME" id="TABLE_NAME">
+            <select name="" id="SQL_TABLES">
+                <option value="TABLE1">TABLE1</option>
+                <option value="TABLE2">TABLE2</option>
+                <option value="TABLE3">TABLE3</option>
+                <option value="TABLE4">TABLE4</option>
+            </select>
+        </div>
+        
+        <div class="GRAPH">
+            <canvas id="lineChart" width="500" height="200"></canvas>
+
+            <div class="VARIABLES">
+                <select name="" id="VARIABLE1">
+                    <option value="val1">VAR1</option>
+                    <option value="val2">VAR2</option>
+                    <option value="val3">VAR3</option>
+                    <option value="val4">VAR4</option>
+                </select>
+
+                <select name="" id="VARIABLE2">
+                    <option value="val1">VAR1</option>
+                    <option value="val2">VAR2</option>
+                    <option value="val3">VAR3</option>
+                    <option value="val4">VAR4</option>
+                </select>
+
+                <select name="" id="VARIABLE3">
+                    <option value="val1">VAR1</option>
+                    <option value="val2">VAR2</option>
+                    <option value="val3">VAR3</option>
+                    <option value="val4">VAR4</option>
+                </select>
+
+                <select name="" id="VARIABLE4">
+                    <option value="val1">VAR1</option>
+                    <option value="val2">VAR2</option>
+                    <option value="val3">VAR3</option>
+                    <option value="val4">VAR4</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tooltip HTML -->
+        <div class="tooltip_text" id="tooltiptext"> 
+            <b><p class="title" id="tooltipTitle"></p></b>
+            <hr>
+            <div class="info"> 
+                <p id="V1" class="VALUE1"></p> 
+                <p id="V2" class="VALUE2"></p>
+                <p id="V3" class="VALUE3"></p>
+                <p id="V4" class="VALUE4"></p> 
+            </div> 
+        </div>
+    </div>
+</body>
+</html>
