@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="tooltip.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="something.js"></script>
     <title>Line Chart</title>
 </head>
@@ -12,58 +13,67 @@
     <div class="container">
         <div class="SQL_TABLE">
             <input type="text" name="TABLE_NAME" id="TABLE_NAME">
-            <select name="" id="SQL_TABLES">
-                <option value="TABLE1">TABLE1</option>
-                <option value="TABLE2">TABLE2</option>
-                <option value="TABLE3">TABLE3</option>
-                <option value="TABLE4">TABLE4</option>
-            </select>
         </div>
         
         <div class="GRAPH">
-            <canvas id="lineChart" width="500" height="200"></canvas>
-
-            <div class="VARIABLES">
-                <select name="" id="VARIABLE1">
-                    <option value="val1">VAR1</option>
-                    <option value="val2">VAR2</option>
-                    <option value="val3">VAR3</option>
-                    <option value="val4">VAR4</option>
-                </select>
-
-                <select name="" id="VARIABLE2">
-                    <option value="val1">VAR1</option>
-                    <option value="val2">VAR2</option>
-                    <option value="val3">VAR3</option>
-                    <option value="val4">VAR4</option>
-                </select>
-
-                <select name="" id="VARIABLE3">
-                    <option value="val1">VAR1</option>
-                    <option value="val2">VAR2</option>
-                    <option value="val3">VAR3</option>
-                    <option value="val4">VAR4</option>
-                </select>
-
-                <select name="" id="VARIABLE4">
-                    <option value="val1">VAR1</option>
-                    <option value="val2">VAR2</option>
-                    <option value="val3">VAR3</option>
-                    <option value="val4">VAR4</option>
-                </select>
+            <canvas id="lineChart" width="600" height="200"></canvas>
+            <div class="tooltip_text" id="tooltiptext" style="min-height: 10%;">
+                <b>
+                    <p id="tooltipTitle" class="title"></p>
+                </b>
+                <hr>
+                <div class="info">
+                    <p id="VALUE" class="VALUE"></p>
+                    <p id="VALUE" class="VALUE"></p>
+                    <p id="VALUE" class="VALUE"></p>
+                    <p id="VALUE" class="VALUE"></p>
+                </div>
             </div>
-        </div>
+            <div class="VARIABLES">
+                <div class="line1">
+                    <input type="color" name="colorLine1" id="colorLine1">
 
-        <!-- Tooltip HTML -->
-        <div class="tooltip_text" id="tooltiptext"> 
-            <b><p class="title" id="tooltipTitle"></p></b>
-            <hr>
-            <div class="info"> 
-                <p id="V1" class="VALUE1"></p> 
-                <p id="V2" class="VALUE2"></p>
-                <p id="V3" class="VALUE3"></p>
-                <p id="V4" class="VALUE4"></p> 
-            </div> 
+                    <select name="VARIABLE1" id="VARIABLE1">
+                        <option value="val1">VAR1</option>
+                        <option value="val2">VAR2</option>
+                        <option value="val3">VAR3</option>
+                        <option value="val4">VAR4</option>
+                    </select>
+                </div>
+                
+                <div class="line2">
+                    <input type="color" name="colorLine2" id="colorLine2">
+
+                    <select name="VARIABLE2" id="VARIABLE2">
+                        <option value="val1">VAR1</option>
+                        <option value="val2">VAR2</option>
+                        <option value="val3">VAR3</option>
+                        <option value="val4">VAR4</option>
+                    </select>
+                </div>
+                
+                <div class="line3">
+                    <input type="color" name="colorLine3" id="colorLine3">
+
+                    <select name="VARIABLE3" id="VARIABLE3">
+                        <option value="val1">VAR1</option>
+                        <option value="val2">VAR2</option>
+                        <option value="val3">VAR3</option>
+                        <option value="val4">VAR4</option>
+                    </select>
+                </div>
+
+                <div class="line4">
+                    <input type="color" name="colorLine4" id="colorLine4">
+
+                    <select name="VARIABLE4" id="VARIABLE4">
+                        <option value="val1">VAR1</option>
+                        <option value="val2">VAR2</option>
+                        <option value="val3">VAR3</option>
+                        <option value="val4">VAR4</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 </body>
