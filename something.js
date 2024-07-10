@@ -9,16 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const colorLine3 = document.getElementById("colorLine3");
     const colorLine4 = document.getElementById("colorLine4");
 
-    const chartWidth = canvas.width - 65; // Reduced to account for second y-axis
+    const chartWidth = canvas.width - 90; // Reduced to account for second y-axis
     const chartHeight = canvas.height - 40;
     const chartX = 40;
     const chartY = 5;
-    const chartX2 = canvas.width - 25; // New x position for second y-axis
+    const chartX2 = canvas.width - 49; // New x position for second y-axis
 
     // Example dynamic datasets with yAxis property
     let datasets = [
-        { label: "Dataset 1", data: [], color: colorLine1.value, yAxis: 'left' },
-        { label: "Dataset 2", data: [], color: colorLine2.value, yAxis: 'right' },
+        { label: "Dataset 1", data: [], color: colorLine1.value, yAxis: 'right' },
+        { label: "Dataset 2", data: [], color: colorLine2.value, yAxis: 'left' },
         { label: "Dataset 3", data: [], color: colorLine3.value, yAxis: 'left' },
         { label: "Dataset 4", data: [], color: colorLine4.value, yAxis: 'left' }
     ];
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function fetchData() {
         // Replace this with your actual data fetching logic
         return [
-            { label: "Dataset 1", data: [0, 1, 1, 0, 0, 0, 1, 1, 1, 1] },
+            { label: "Dataset 1", data: [false, true, true, false, false, false, true, true, true, false] },
             { label: "Dataset 2", data: [14, 1, 4, 8, 6, 5, 8, 12, 10, 14] },
             { label: "Dataset 3", data: [7, 1, 4, 8, 6, 10, 18, 12, 10, 14] },
             { label: "Dataset 4", data: [3, 2, 4, 8, 6, 10, 8, 12, 10, 14] }
@@ -54,20 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
     datasets.forEach(dataset => {
         if (dataset.yAxis === 'left') {
             if (!containsOnlyBooleanOrNumeric01(dataset.data)) {
-                const min = 0;
+                const min = Math.min(...dataset.data);
                 const max = Math.max(...dataset.data);
                 minDataValueLeft = Math.min(minDataValueLeft, min);
                 maxDataValueLeft = Math.max(maxDataValueLeft, max);
+            } else {
+                minDataValueLeft = 0;
+                maxDataValueLeft = 1;
             }
         } else if (dataset.yAxis === 'right') {
-            if (containsOnlyBooleanOrNumeric01(dataset.data)) {
-                minDataValueRight = 0;
-                maxDataValueRight = 1;
-            } else {
-                const min = 0;
+            if (!containsOnlyBooleanOrNumeric01(dataset.data)) {
+                const min = Math.min(...dataset.data);
                 const max = Math.max(...dataset.data);
                 minDataValueRight = Math.min(minDataValueRight, min);
                 maxDataValueRight = Math.max(maxDataValueRight, max);
+            } else {
+                minDataValueRight = 0;
+                maxDataValueRight = 1;
             }
         }
     });
@@ -116,79 +119,89 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.moveTo(chartX, y);
             ctx.lineTo(chartX + chartWidth, y);
             ctx.strokeStyle = '#e0e0e0';
+            ctx.fillStyle = '#000000';
             ctx.stroke();
         }
     
-        // Draw X axis labels
-        ctx.font = '11px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#000';
-    
-        for (let i = 0; i <= numGridLinesX; i++) {
-            let x = chartX + (chartWidth / numGridLinesX) * i;
-            ctx.fillText(i, x, chartHeight + chartY + 20);
-        }
-    
-        // Draw left Y axis labels
-        ctx.textAlign = 'right';
-        ctx.fillText(minDataValueLeft.toFixed(1), chartX - 10, chartHeight + chartY);
-        ctx.fillText(maxDataValueLeft.toFixed(1), chartX - 10, chartY + 10);
-    
-        // Draw right Y axis labels
-        ctx.textAlign = 'left';
-        ctx.fillText(minDataValueRight.toFixed(1), chartX2 + 10, chartHeight + chartY);
-        ctx.fillText(maxDataValueRight.toFixed(1), chartX2 + 10, chartY + 10);
-    
-        // Draw data lines and points
+        // Draw data lines
         datasets.forEach(dataset => {
-            let minValue, maxValue;
+            ctx.beginPath();
+            ctx.strokeStyle = dataset.color;
+            ctx.lineWidth = 2
+    
+            let yScale, minValue, yAxisHeight;
             if (dataset.yAxis === 'left') {
+                yScale = (value) => chartHeight - ((value - minDataValueLeft) / (maxDataValueLeft - minDataValueLeft)) * chartHeight;
                 minValue = minDataValueLeft;
-                maxValue = maxDataValueLeft;
-            } else if (dataset.yAxis === 'right') {
-                // Adjust minValue and maxValue to align with left y-axis height
-                minValue = minDataValueLeft + (minDataValueRight - minDataValueRight) * leftYAxisHeight / rightYAxisHeight;
-                maxValue = maxDataValueLeft + (maxDataValueRight - minDataValueRight) * leftYAxisHeight / rightYAxisHeight;
+                yAxisHeight = leftYAxisHeight;
+            } else {
+                yScale = (value) => chartHeight - ((value - minDataValueRight) / (maxDataValueRight - minDataValueRight)) * chartHeight;
+                minValue = minDataValueRight;
+                yAxisHeight = rightYAxisHeight;
             }
     
-            const dataLength = dataset.data.length;
-            const xIncrement = chartWidth / (dataLength - 1);
+            dataset.data.forEach((value, index) => {
+                const x = chartX + (chartWidth / (dataset.data.length - 1)) * index;
+                const y = chartY + yScale(value);
     
-            ctx.beginPath();
-            for (let i = 0; i < dataLength; i++) {
-                let x;
-                if (dataset.yAxis === 'left') {
-                    x = chartX + xIncrement * i;
-                } else if (dataset.yAxis === 'right') {
-                    x = chartX2 - xIncrement * i;
-                }
-                let y = chartHeight + chartY - ((dataset.data[i] - minValue) / (maxValue - minValue)) * chartHeight;
-                if (i === 0) {
+                if (index === 0) {
                     ctx.moveTo(x, y);
                 } else {
                     ctx.lineTo(x, y);
                 }
-            }
-            ctx.strokeStyle = dataset.color;
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            });
     
-            for (let i = 0; i < dataLength; i++) {
-                let x;
-                if (dataset.yAxis === 'left') {
-                    x = chartX + xIncrement * i;
-                } else if (dataset.yAxis === 'right') {
-                    x = chartX2 - xIncrement * i;
-                }
-                let y = chartHeight + chartY - ((dataset.data[i] - minValue) / (maxValue - minValue)) * chartHeight;
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, Math.PI * 2, true);
-                ctx.fillStyle = dataset.color;
-                ctx.fill();
-            }
+            ctx.stroke();
         });
-    }    
+    
+        // Draw Y axis labels
+        for (let i = 0; i <= numGridLinesY; i++) {
+            let valueLeft, valueRight;
 
+            // Determine values for left y-axis
+            if (minDataValueLeft === false && maxDataValueLeft === true) {
+                if (i === 0 || i === numGridLinesY) {
+                    valueLeft = i === 0 ? false : true; // Only show 0 at the bottom and 1 at the top
+                } else {
+                    continue; // Skip intermediate grid lines
+                }
+            } else {
+                valueLeft = minDataValueLeft + (maxDataValueLeft - minDataValueLeft) * (i / numGridLinesY);
+            }
+
+            // Determine values for right y-axis
+            if (minDataValueRight === false && maxDataValueRight === true) {
+                if (i === 0 || i === numGridLinesY) {
+                    valueRight = i === 0 ? false : true; // Only show 0 at the bottom and 1 at the top
+                } else {
+                    continue; // Skip intermediate grid lines
+                }
+            } else {
+                valueRight = minDataValueRight + (maxDataValueRight - minDataValueRight) * (i / numGridLinesY);
+            }
+
+            const y = chartY + chartHeight - (chartHeight / numGridLinesY) * i;
+
+            
+
+            if (valueLeft === true || valueLeft === false) {
+                ctx.fillText(valueLeft, chartX - 30, y + 3); // left y-axis labels
+            } else { ctx.fillText(valueLeft.toFixed(2), chartX - 30, y + 3); } // left y-axis labels
+
+            if (valueRight === true || valueRight === false) { ctx.fillText(valueRight, chartX - 30, y + 3); } // left y-axis labels  
+            else { ctx.fillText(valueRight.toFixed(2), chartX2 + 10, y + 3); } // left y-axis labels
+        }
+
+        // Draw X axis labels
+        datasets[0].data.forEach((_, index) => {
+            const x = chartX + (chartWidth / (datasets[0].data.length - 1)) * index;
+            const label = `P${index + 1}`; // Replace with actual labels if available
+            ctx.fillStyle = '#000000';
+            ctx.fillText(label, x - 10, chartHeight + chartY + 20);
+        });
+    }
+
+    // Tooltip functionality
     function showTooltip(event) {
         const rect = canvas.getBoundingClientRect();
         const mouseX = event.clientX - rect.left;
@@ -211,16 +224,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const xIncrement = chartWidth / (dataLength - 1);
     
             for (let i = 0; i < dataLength; i++) {
-                let x;
-                if (dataset.yAxis === 'left') {
-                    x = chartX + xIncrement * i;
-                } else if (dataset.yAxis === 'right') {
-                    x = chartX2 - xIncrement * i; // Adjust for right y-axis
-                }
+                let x = chartX + xIncrement * i;
                 let y = chartHeight + chartY - ((dataset.data[i] - minValue) / (maxValue - minValue)) * chartHeight;
                 
                 // Adjust the radius to detect points
-                let radius = 6; // Increase the radius for points on the right y-axis
+                let radius = 6; // Increase the radius for points
     
                 // Check if the cursor is near the point
                 if (Math.abs(mouseX - x) <= radius && Math.abs(mouseY - y) <= radius) {
@@ -255,38 +263,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     tooltip.style.minHeight = '80px';
                     break;
             }
-    
+
             tooltip.style.visibility = 'visible';
         } else {
             tooltip.style.visibility = 'hidden';
         }
-    }    
-
-    canvas.addEventListener('mousemove', showTooltip);
-    canvas.addEventListener('mouseout', () => {
+    } 
+    
+    // Hide tooltip
+    function hideTooltip() {
         tooltip.style.visibility = 'hidden';
+    }
+
+    // Event listeners for tooltip
+    canvas.addEventListener('mousemove', showTooltip);
+    canvas.addEventListener('mouseout', hideTooltip);
+
+    // Update chart when color input changes
+    [colorLine1, colorLine2, colorLine3, colorLine4].forEach((colorInput, index) => {
+        colorInput.addEventListener('input', () => {
+            datasets[index].color = colorInput.value;
+            drawChart();
+        });
     });
 
-    // Event listeners for color inputs
-    colorLine1.addEventListener('change', function() {
-        datasets[0].color = this.value;
-        drawChart();
-    });
-
-    colorLine2.addEventListener('change', function() {
-        datasets[1].color = this.value;
-        drawChart();
-    });
-
-    colorLine3.addEventListener('change', function() {
-        datasets[2].color = this.value;
-        drawChart();
-    });
-
-    colorLine4.addEventListener('change', function() {
-        datasets[3].color = this.value;
-        drawChart();
-    });
-
+    // Draw the initial chart
     drawChart();
 });
